@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { MdSearch } from 'react-icons/md';
-import { HiPencilAlt } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { MdSearch } from "react-icons/md";
+import { FaArrowRight } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 function ClassManagement() {
   const [classes, setClasses] = useState([]);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const studentId = localStorage.getItem('username'); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const studentId = localStorage.getItem("username");
   const language = useSelector((state) => state.language.language);
 
   useEffect(() => {
@@ -17,13 +17,16 @@ function ClassManagement() {
 
   const fetchClasses = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}student/getclasses/${studentId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) throw new Error('Failed to fetch classes');
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}student/getclasses/${studentId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch classes");
       const data = await response.json();
       setClasses(data);
     } catch (error) {
@@ -46,10 +49,12 @@ function ClassManagement() {
       <header className="flex flex-col sm:flex-row justify-between items-end pb-4 border-b border-stone-300 dark:border-stone-600">
         <div className="mb-4 sm:mb-0">
           <h1 className="text-2xl font-bold dark:text-white">
-            {language === 'vi' ? 'QUẢN LÝ LỚP HỌC' : 'CLASS MANAGEMENT'}
+            {language === "vi" ? "QUẢN LÝ LỚP HỌC" : "CLASS MANAGEMENT"}
           </h1>
           <p className="text-sm text-stone-600 dark:text-white pr-4">
-            {language === 'vi' ? 'Quản lý lớp học và xem chi tiết.' : 'Manage your classes and view details.'}
+            {language === "vi"
+              ? "Quản lý lớp học và xem chi tiết."
+              : "Manage your classes and view details."}
           </p>
         </div>
         <div className="relative">
@@ -61,7 +66,9 @@ function ClassManagement() {
             name="search_text"
             id="floating_text"
             className="block w-full p-2 ps-10 text-sm text-black border border-stone-600 rounded-lg bg-stone-100 focus:ring-blue-500 focus:border-blue-500 dark:bg-stone-800 dark:border-stone-600 dark:placeholder-stone-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder={language === 'vi' ? 'Tìm kiếm lớp học' : 'Search for class'}
+            placeholder={
+              language === "vi" ? "Tìm kiếm lớp học" : "Search for class"
+            }
             value={searchQuery}
             onChange={handleSearchChange}
             required
@@ -73,27 +80,29 @@ function ClassManagement() {
         <table className="w-full text-sm text-left rtl:text-right text-black dark:text-white">
           <thead className="text-xs uppercase bg-stone-200 dark:bg-stone-700 dark:text-white">
             <tr>
-              <th scope="col" className="px-6 py-3 whitespace-nowrap">STT</th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Tên lớp học' : 'Class Name'}
+                STT
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Giáo viên chủ nhiệm' : 'Homeroom Teacher'}
+                {language === "vi" ? "Tên lớp học" : "Class Name"}
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Năm học' : 'School Year'}
+                {language === "vi" ? "Giáo viên chủ nhiệm" : "Homeroom Teacher"}
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Học kỳ' : 'Semester'}
+                {language === "vi" ? "Năm học" : "School Year"}
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Trạng thái' : 'Status'}
+                {language === "vi" ? "Học kỳ" : "Semester"}
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Số lượng học sinh' : 'Number of Students'}
+                {language === "vi" ? "Trạng thái" : "Status"}
               </th>
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                {language === 'vi' ? 'Hành động' : 'Actions'}
+                {language === "vi" ? "Số lượng học sinh" : "Number of Students"}
+              </th>
+              <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                {language === "vi" ? "Hành động" : "Actions"}
               </th>
             </tr>
           </thead>
@@ -101,21 +110,46 @@ function ClassManagement() {
           <tbody className="text-sm">
             {filteredClasses.length !== 0 ? (
               filteredClasses.map((classItem, index) => (
-                <tr key={classItem._id} className="even:bg-stone-100 odd:bg-white dark:even:bg-stone-800 dark:odd:bg-stone-900 border-b dark:border-stone-700">
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{index + 1}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.name}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.teacher.lastName + " " + classItem.teacher.firstName}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.semester.schoolYear ? classItem.semester.schoolYear.year : 'N/A'}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.semester.name}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.semester.isActive ? (language === 'vi' ? 'Hoạt động' : 'Active') : (language === 'vi' ? 'Không hoạt động' : 'Inactive')}</td>
-                  <td className="px-6 py-1 text-xs whitespace-nowrap">{classItem.students.length}</td>
+                <tr
+                  key={classItem._id}
+                  className="even:bg-stone-100 odd:bg-white dark:even:bg-stone-800 dark:odd:bg-stone-900 border-b dark:border-stone-700">
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {index + 1}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.name}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.teacher.lastName +
+                      " " +
+                      classItem.teacher.firstName}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.semester.schoolYear
+                      ? classItem.semester.schoolYear.year
+                      : "N/A"}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.semester.name}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.semester.isActive
+                      ? language === "vi"
+                        ? "Hoạt động"
+                        : "Active"
+                      : language === "vi"
+                        ? "Không hoạt động"
+                        : "Inactive"}
+                  </td>
+                  <td className="px-6 py-1 text-xs whitespace-nowrap">
+                    {classItem.students.length}
+                  </td>
                   <td className="px-6 py-1 text-xs whitespace-nowrap flex justify-center items-center space-x-2">
                     <Link to={`/student/score/${classItem._id}`}>
                       <button
                         type="button"
-                        className="text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 font-medium rounded-lg text-xs px-3 py-2 transition duration-200 ease-in-out dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-700"
-                      >
-                        <HiPencilAlt size={18} />
+                        className="text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 font-medium rounded-lg text-xs px-3 py-2 transition duration-200 ease-in-out dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-700">
+                        <FaArrowRight size={18} />
                       </button>
                     </Link>
                   </td>
@@ -123,8 +157,12 @@ function ClassManagement() {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center py-4 text-stone-500 dark:text-stone-400">
-                  {language === 'vi' ? 'Không tìm thấy lớp học nào' : 'No classes found'}
+                <td
+                  colSpan="8"
+                  className="text-center py-4 text-stone-500 dark:text-stone-400">
+                  {language === "vi"
+                    ? "Không tìm thấy lớp học nào"
+                    : "No classes found"}
                 </td>
               </tr>
             )}

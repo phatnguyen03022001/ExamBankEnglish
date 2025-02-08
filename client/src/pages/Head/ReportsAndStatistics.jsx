@@ -5,9 +5,9 @@ import { getSemesters, getClass } from "../../services/gradeService";
 
 import { Link } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
-import { PiCheckFatFill } from "react-icons/pi";
+import { MdCircle } from "react-icons/md";
 
-import Loading from '../../components/Loading/Loading'
+import Loading from "../../components/Loading/Loading";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -22,32 +22,36 @@ function GradeManagement() {
     const fetchSemesters = async () => {
       try {
         const data = await getSemesters();
-        
+
         // Sắp xếp các học kỳ theo thứ tự giảm dần dựa trên năm học kỳ
-        const sortedData = data.sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
-        
+        const sortedData = data.sort((a, b) =>
+          b.schoolYear.localeCompare(a.schoolYear)
+        );
+
         // Sắp xếp thứ tự của Semester giảm dần (III, II, I)
-        const semesterOrder = { "III": 3, "II": 2, "I": 1 };
+        const semesterOrder = { III: 3, II: 2, I: 1 };
         const sortedSemesters = sortedData.sort((a, b) => {
           if (a.schoolYear === b.schoolYear) {
             return semesterOrder[b.name] - semesterOrder[a.name];
           }
           return b.schoolYear.localeCompare(a.schoolYear);
         });
-  
+
         setSemesters(sortedSemesters);
         setLoading(false);
-  
-        // Tự động chọn học kỳ đầu tiên nếu danh sách không rỗng
-        if (sortedSemesters.length > 0) {
-          setSelectedSemester(sortedSemesters[0]);
-        }
+
+        // Tự động chọn học kỳ đang active nếu tồn tại, nếu không chọn học kỳ đầu tiên
+        const activeSemester = sortedSemesters.find(
+          (semester) => semester.isActive
+        );
+
+        setSelectedSemester(activeSemester || sortedSemesters[0]);
       } catch (error) {
         console.log("Error fetching semesters:", error.message);
         setLoading(false);
       }
     };
-  
+
     fetchSemesters();
   }, []);
 
@@ -133,24 +137,27 @@ function GradeManagement() {
       </header>
 
       {loading ? (
-        <Loading/>
+        <Loading />
       ) : (
         <div className="mt-4 space-y-6">
           {semesters.map((semester) => (
             <div
               key={semester._id}
-              className="p-4 bg-white dark:bg-stone-800 rounded-lg shadow"
-            >
+              className="p-4 bg-white dark:bg-stone-800 rounded-lg shadow">
               <h1
                 className="text-2xl font-bold mb-2 dark:text-white flex items-center"
-                onClick={() => handleSelectSemester(semester)}
-              >
+                onClick={() => handleSelectSemester(semester)}>
                 {language === "vi"
                   ? `HỌC KỲ ${semester.name} (${semester.schoolYear})`
                   : `SEMESTER ${semester.name} (${semester.schoolYear})`}
-                {semester.isActive && (
-                  <span className="text-green-500 ml-2 flex justify-between items-center">
-                    <PiCheckFatFill />
+
+                {semester.isActive ? (
+                  <span className="text-sm text-green-500 ml-2 flex justify-center items-center">
+                    <MdCircle />
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-500 ml-2 flex justify-center items-center">
+                    <MdCircle />
                   </span>
                 )}
               </h1>
@@ -171,8 +178,7 @@ function GradeManagement() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.5 }}
-                        className="mt-6 border-t border-stone-300 pt-6"
-                      >
+                        className="mt-6 border-t border-stone-300 pt-6">
                         <div className="flex flex-col md:flex-row gap-4">
                           <div className="flex-1">
                             <h3 className="text-2xl font-semibold text-stone-800 dark:text-white">
@@ -212,8 +218,7 @@ function GradeManagement() {
                                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-stone-900 dark:text-stone-300">
                                         <Link
                                           to={`/head/reports/class/${cls._id}`}
-                                          className="hover:underline"
-                                        >
+                                          className="hover:underline">
                                           {cls.name}
                                         </Link>
                                       </td>
@@ -228,8 +233,7 @@ function GradeManagement() {
                                       <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-stone-400">
                                         <Link
                                           to={`/head/reports/class/${cls._id}`}
-                                          className="text-blue-500 hover:underline"
-                                        >
+                                          className="text-blue-500 hover:underline">
                                           {language === "vi"
                                             ? "Xem chi tiết"
                                             : "View Details"}

@@ -1,22 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import Loading from '../../Loading/Loading';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import Loading from "../../Loading/Loading";
+import { useSelector } from "react-redux";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const ScoreDetails = () => {
   const { classId } = useParams();
   const [scores, setScores] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const studentId = localStorage.getItem('username');
+  const studentId = localStorage.getItem("username");
+  const language = useSelector((state) => state.language.language);
 
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}student/getscores/${studentId}/${classId}`);
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}student/getscores/${studentId}/${classId}`
+        );
         if (!response.ok) {
           throw new Error(`Students have never had a grade in this class.`);
         }
@@ -32,8 +51,15 @@ const ScoreDetails = () => {
     fetchScores();
   }, [studentId, classId]);
 
-  if (loading) return <Loading/>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <Loading />;
+  if (error)
+    return (
+      <p className="flex justify-center items-center text-sm text-red-600 dark:text-red-300 pr-4">
+        {language === "vi"
+          ? "Students have never had a grade in this class."
+          : "Học sinh chưa có điểm trong lớp này."}
+      </p>
+    );
 
   // Helper function to round score
   const roundToNearest025 = (num) => {
@@ -45,29 +71,33 @@ const ScoreDetails = () => {
     score: roundToNearest025(score),
   }));
 
-  const fifteenMinutesScores = scores.scores.fifteenMinutes.map((score, index) => ({
-    label: `15 Minutes ${index + 1}`,
-    score: roundToNearest025(score),
-  }));
+  const fifteenMinutesScores = scores.scores.fifteenMinutes.map(
+    (score, index) => ({
+      label: `15 Minutes ${index + 1}`,
+      score: roundToNearest025(score),
+    })
+  );
 
   const chartData = {
     labels: [
-      ...oralScores.map(score => score.label),
-      ...fifteenMinutesScores.map(score => score.label),
-      'Mid Term',
-      'Final Exam',
+      ...oralScores.map((score) => score.label),
+      ...fifteenMinutesScores.map((score) => score.label),
+      "Mid Term",
+      "Final Exam",
     ],
     datasets: [
       {
-        label: 'Scores',
+        label: "Scores",
         data: [
-          ...oralScores.map(score => score.score),
-          ...fifteenMinutesScores.map(score => score.score),
+          ...oralScores.map((score) => score.score),
+          ...fifteenMinutesScores.map((score) => score.score),
           roundToNearest025(scores.scores.midTerm),
-          scores.scores.finalExam !== null ? roundToNearest025(scores.scores.finalExam) : 0,
+          scores.scores.finalExam !== null
+            ? roundToNearest025(scores.scores.finalExam)
+            : 0,
         ],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
@@ -77,11 +107,11 @@ const ScoreDetails = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Student Scores',
+        text: "Student Scores",
       },
     },
   };
@@ -95,11 +125,15 @@ const ScoreDetails = () => {
             <Bar data={chartData} options={chartOptions} />
           </div>
           <div className="mt-6">
-            <p className="text-lg dark:text-white">Average Score: {roundToNearest025(scores.averageScore)}</p>
+            <p className="text-lg dark:text-white">
+              Average Score: {roundToNearest025(scores.averageScore)}
+            </p>
           </div>
         </div>
       ) : (
-        <p className="text-lg dark:text-white">No scores available for this class.</p>
+        <p className="text-lg dark:text-white">
+          No scores available for this class.
+        </p>
       )}
     </div>
   );
