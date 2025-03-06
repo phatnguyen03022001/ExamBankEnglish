@@ -42,16 +42,16 @@ const TestAccountDialog = ({ isOpen, onClose }) => {
         </h2>
         <div className="mt-4 text-stone-700 text-sm space-y-2">
           <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
-            <span className="font-semibold">Student:</span>{" "}
-            <span>120240001 | Pass: admin</span>
+            <span className="font-semibold">Head:</span>{" "}
+            <span>H20240001 | Pass: admin</span>
           </p>
           <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
             <span className="font-semibold">Teacher:</span>{" "}
             <span>T20240001 | Pass: admin</span>
           </p>
           <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
-            <span className="font-semibold">Head:</span>{" "}
-            <span>H20240001 | Pass: admin</span>
+            <span className="font-semibold">Student:</span>{" "}
+            <span>120240001 | Pass: admin</span>
           </p>
         </div>
       </div>

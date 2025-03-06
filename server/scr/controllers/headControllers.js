@@ -2,11 +2,9 @@ const User = require("../models/User");
 const SchoolYear = require("../models/SchoolYear");
 const Class = require("../models/Class");
 const Semester = require("../models/Semester");
-const ExamSubmission = require("../models/ExamSubmission")
-const ApprovedExam = require("../models/ApprovedExam")
-const Exam = require("../models/Exam")
-
-
+const ExamSubmission = require("../models/ExamSubmission");
+const ApprovedExam = require("../models/ApprovedExam");
+const Exam = require("../models/Exam");
 
 const fs = require("fs");
 const crypto = require("crypto");
@@ -14,9 +12,16 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 
 function getRandomAvatar() {
-  const avatarsDir = path.join(__dirname, '..', '..', 'uploads', 'images', 'randomAvata');
+  const avatarsDir = path.join(
+    __dirname,
+    "..",
+    "..",
+    "uploads",
+    "images",
+    "randomAvata"
+  );
   const files = fs.readdirSync(avatarsDir);
-  const avatars = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+  const avatars = files.filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file));
   const randomIndex = Math.floor(Math.random() * avatars.length);
   return `uploads/images/randomAvata/${avatars[randomIndex]}`;
 }
@@ -24,7 +29,7 @@ exports.adduser = async (req, res) => {
   const { email, firstName, lastName, address, contactNumber, role } = req.body;
 
   // Chuyển đổi address về dạng chuỗi nếu cần
-  const addressString = typeof address === 'string' ? address : '';
+  const addressString = typeof address === "string" ? address : "";
 
   if (email !== "") {
     const existingUser = await User.findOne({ email });
@@ -120,13 +125,15 @@ exports.getUserPassById = async (req, res) => {
       res.json({
         message: "Temporary password generated",
         tempPassword, // Send the generated tempPassword
-        instruction: "Please change this password immediately after logging in."
+        instruction:
+          "Please change this password immediately after logging in.",
       });
     } else {
       // If password has been changed, instruct user to use reset function
       res.json({
         message: "Password has been previously set",
-        instruction: "Please use the 'Forgot Password' feature to reset your password if needed."
+        instruction:
+          "Please use the 'Forgot Password' feature to reset your password if needed.",
       });
     }
   } catch (error) {
@@ -142,12 +149,12 @@ exports.blockusers = async (req, res) => {
     // Cập nhật trạng thái của các người dùng
     await User.updateMany(
       { _id: { $in: userIds } },
-      { $set: { status: 'locked' } }
+      { $set: { status: "locked" } }
     );
-    res.status(200).json({ message: 'Users blocked successfully' });
+    res.status(200).json({ message: "Users blocked successfully" });
   } catch (error) {
-    console.error('Error blocking users:', error);
-    res.status(500).json({ message: 'Error blocking users' });
+    console.error("Error blocking users:", error);
+    res.status(500).json({ message: "Error blocking users" });
   }
 };
 
@@ -162,12 +169,12 @@ exports.updateUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user', error });
+    res.status(500).json({ message: "Error updating user", error });
   }
 };
 
@@ -784,13 +791,13 @@ exports.getteacherswithoutclass = async (req, res) => {
 
 exports.getteachers = async (req, res) => {
   try {
-    const teachers = await User.find({ role: 'Teacher' }).exec();
+    const teachers = await User.find({ role: "Teacher" }).exec();
     res.status(200).json(teachers);
   } catch (error) {
-    console.error('Error fetching teachers:', error);
-    res.status(500).json({ message: 'Error fetching teachers' });
+    console.error("Error fetching teachers:", error);
+    res.status(500).json({ message: "Error fetching teachers" });
   }
-}
+};
 exports.deletecstudentfromclass = async (req, res) => {
   try {
     const { classId } = req.params;
@@ -821,41 +828,53 @@ exports.deletecstudentfromclass = async (req, res) => {
   }
 };
 
-
-
 // Exam //////////////////////
 
 exports.postexamsubmissions = async (req, res) => {
-  const { examID, semesterID, grade, examType, status, comments, isActive, examTime } = req.body;
+  const {
+    examID,
+    semesterID,
+    grade,
+    examType,
+    status,
+    comments,
+    isActive,
+    examTime,
+  } = req.body;
 
   try {
     // Validate input
     if (!semesterID || !grade || !examType) {
-      return res.status(400).json({ message: 'Semester ID, grade, and exam type are required' });
+      return res
+        .status(400)
+        .json({ message: "Semester ID, grade, and exam type are required" });
     }
 
     // Create a new exam submission document
     const newExamSubmission = new ExamSubmission({
-      examID: examID || [],  // Default to an empty array if no examID is provided
+      examID: examID || [], // Default to an empty array if no examID is provided
       semesterID,
       grade,
       examType,
       // status: status || 'Pending',
-      comments: comments || '', // Default to an empty string if no comments are provided
+      comments: comments || "", // Default to an empty string if no comments are provided
       isActive: isActive || false,
-      examTime: examTime || null // Default to null if no examTime is provided
+      examTime: examTime || null, // Default to null if no examTime is provided
     });
 
     // Save the exam submission document to MongoDB
     await newExamSubmission.save();
 
     // Send success response
-    res.status(201).json({ message: 'Exam submission added successfully', data: newExamSubmission });
+    res.status(201).json({
+      message: "Exam submission added successfully",
+      data: newExamSubmission,
+    });
   } catch (error) {
-    console.error('Error adding exam submission:', error.message);
-    res.status(500).json({ message: 'Server error', error: error.message }); // Include the error message for debugging
+    console.error("Error adding exam submission:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message }); // Include the error message for debugging
   }
-}
+};
 
 exports.getexamsubmissions = async (req, res) => {
   const { semesterId } = req.params;
@@ -863,7 +882,7 @@ exports.getexamsubmissions = async (req, res) => {
 
   try {
     if (!semesterId) {
-      return res.status(400).json({ message: 'Semester ID is required' });
+      return res.status(400).json({ message: "Semester ID is required" });
     }
 
     // Tạo bộ lọc dựa trên semesterId và grade (nếu có)
@@ -875,47 +894,46 @@ exports.getexamsubmissions = async (req, res) => {
     const exams = await ExamSubmission.find(filter);
 
     if (!exams.length) {
-      return res.status(404).json({ message: 'No exam submissions found for the given semester ID' });
+      return res.status(404).json({
+        message: "No exam submissions found for the given semester ID",
+      });
     }
 
     res.status(200).json(exams);
   } catch (error) {
-    console.error('Error fetching exam submissions:', error.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching exam submissions:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 exports.setexampassword = async (req, res) => {
   const { examId } = req.params;
   const { password } = req.body;
 
-  console.log(password)
+  console.log(password);
 
   if (!password) {
-    return res.status(400).json({ message: 'Password is required' });
+    return res.status(400).json({ message: "Password is required" });
   }
 
   try {
     // Tìm bài kiểm tra theo examId
     const exam = await ExamSubmission.findById(examId);
     if (!exam) {
-      return res.status(404).json({ message: 'Exam not found' });
+      return res.status(404).json({ message: "Exam not found" });
     }
 
-
-    exam.examPassword = password
+    exam.examPassword = password;
 
     // Lưu thay đổi
     await exam.save();
 
-    res.status(200).json({ message: 'Password updated successfully' });
+    res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
-    console.error('Error updating exam password:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error updating exam password:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
-
-
+};
 
 exports.removeexampassword = async (req, res) => {
   const { examId } = req.params;
@@ -924,7 +942,7 @@ exports.removeexampassword = async (req, res) => {
     // Tìm bài kiểm tra theo examId
     const exam = await ExamSubmission.findById(examId);
     if (!exam) {
-      return res.status(404).json({ message: 'Exam not found' });
+      return res.status(404).json({ message: "Exam not found" });
     }
 
     // Xóa mật khẩu
@@ -933,23 +951,25 @@ exports.removeexampassword = async (req, res) => {
     // Lưu thay đổi
     await exam.save();
 
-    res.status(200).json({ message: 'Password removed successfully' });
+    res.status(200).json({ message: "Password removed successfully" });
   } catch (error) {
-    console.error('Error removing exam password:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error removing exam password:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 exports.getapprovedexams = async (req, res) => {
   try {
     const { examSubmissionId } = req.params;
 
     // Tìm các kỳ thi đã được phê duyệt
-    const approvedExams = await ApprovedExam.find({ ExamSubmissionID: examSubmissionId }).exec();
+    const approvedExams = await ApprovedExam.find({
+      ExamSubmissionID: examSubmissionId,
+    }).exec();
 
-    console.log(approvedExams)
+    // console.log(approvedExams)
     // Lấy thông tin giáo viên tương ứng từ trường teacherID
-    const teacherIds = approvedExams.map(exam => exam.teacherID); // Sử dụng teacherID thay vì userId
+    const teacherIds = approvedExams.map((exam) => exam.teacherID); // Sử dụng teacherID thay vì userId
     const teachers = await User.find({ _id: { $in: teacherIds } }).exec();
 
     // Tạo một map cho giáo viên để dễ tra cứu
@@ -959,15 +979,15 @@ exports.getapprovedexams = async (req, res) => {
     }, {});
 
     // Bổ sung thông tin giáo viên vào các kỳ thi đã được phê duyệt
-    const examsWithTeacherInfo = approvedExams.map(exam => {
+    const examsWithTeacherInfo = approvedExams.map((exam) => {
       const teacher = teacherMap[exam.teacherID.toString()]; // Lấy thông tin giáo viên
       return {
         ...exam.toObject(),
         teacher: {
-          lastName: teacher?.lastName || 'N/A',
-          firstName: teacher?.firstName || 'N/A',
-          username: teacher?.username || 'N/A'
-        }
+          lastName: teacher?.lastName || "N/A",
+          firstName: teacher?.firstName || "N/A",
+          username: teacher?.username || "N/A",
+        },
       };
     });
 
@@ -975,7 +995,7 @@ exports.getapprovedexams = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
 exports.putapprovedexams = async (req, res) => {
   const { examId } = req.params;
@@ -983,8 +1003,8 @@ exports.putapprovedexams = async (req, res) => {
 
   try {
     // Validate status
-    if (!['pending', 'approved', 'rejected'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status' });
+    if (!["pending", "approved", "rejected"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
     }
 
     // Find and update the exam
@@ -995,13 +1015,13 @@ exports.putapprovedexams = async (req, res) => {
     );
 
     if (!updatedExam) {
-      return res.status(404).json({ error: 'Exam not found' });
+      return res.status(404).json({ error: "Exam not found" });
     }
 
     res.json(updatedExam);
   } catch (error) {
-    console.error('Error updating exam status:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error updating exam status:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -1012,7 +1032,7 @@ exports.getExamRequests = async (req, res) => {
     // Kiểm tra học kỳ có tồn tại không
     const semester = await Semester.findById(semesterId);
     if (!semester) {
-      return res.status(404).json({ message: 'Semester not found' });
+      return res.status(404).json({ message: "Semester not found" });
     }
 
     // Tìm các đề thi liên quan đến học kỳ này
@@ -1022,10 +1042,9 @@ exports.getExamRequests = async (req, res) => {
     res.status(200).json(exams);
   } catch (error) {
     console.error("Error fetching exam requests:", error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // Set Exam Time
 exports.setExamTime = async (req, res) => {
@@ -1040,7 +1059,7 @@ exports.setExamTime = async (req, res) => {
     );
 
     if (!exam) {
-      return res.status(404).json({ error: 'Exam not found' });
+      return res.status(404).json({ error: "Exam not found" });
     }
 
     res.json(exam);
@@ -1050,8 +1069,6 @@ exports.setExamTime = async (req, res) => {
   }
 };
 
-
-
 // Toggle Exam Status
 exports.toggleExamStatus = async (req, res) => {
   try {
@@ -1060,7 +1077,7 @@ exports.toggleExamStatus = async (req, res) => {
     const exam = await ExamSubmission.findById(examId);
 
     if (!exam) {
-      return res.status(404).json({ error: 'Exam not found' });
+      return res.status(404).json({ error: "Exam not found" });
     }
 
     exam.isActive = !exam.isActive;

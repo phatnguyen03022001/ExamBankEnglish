@@ -21,8 +21,7 @@ function TeacherSidebar({ responsiveClass, toggleSidebar }) {
   return (
     <div>
       <div
-        className={`w-64 flex flex-col bg-stone-100 dark:bg-stone-900 text-black dark:text-white ${responsiveClass}`}
-      >
+        className={`w-64 flex flex-col bg-stone-100 dark:bg-stone-900 text-black dark:text-white ${responsiveClass}`}>
         <ul className="flex flex-col space-y-2 p-4 text-sm mt-4 mx-4 rounded-lg shadow bg-white dark:bg-stone-800">
           <li>
             <NavLink
@@ -31,8 +30,7 @@ function TeacherSidebar({ responsiveClass, toggleSidebar }) {
                 (pathname === "/teacher" ||
                   pathname.startsWith("/teacher/class")) &&
                 activeLinkClass
-              }`}
-            >
+              }`}>
               <TbBuildingWarehouse size={16} className="mr-4" />
               {language === "vi" ? "Quản lý lớp học" : "Class Management"}
             </NavLink>
@@ -43,8 +41,7 @@ function TeacherSidebar({ responsiveClass, toggleSidebar }) {
               to="/teacher/repository"
               className={`${linkClass} ${
                 pathname.startsWith("/teacher/repository") && activeLinkClass
-              }`}
-            >
+              }`}>
               <TbDatabase size={16} className="mr-4" />
               {language === "vi" ? "Kho lưu trữ đề" : "Repository"}
             </NavLink>
@@ -56,8 +53,7 @@ function TeacherSidebar({ responsiveClass, toggleSidebar }) {
               className={`${linkClass} ${
                 pathname.startsWith("/teacher/examsubmission") &&
                 activeLinkClass
-              }`}
-            >
+              }`}>
               <TbDatabaseExport size={16} className="mr-4" />
               {language === "vi" ? "Nộp đề thi" : "Submit Exam"}
             </NavLink>
@@ -68,8 +64,7 @@ function TeacherSidebar({ responsiveClass, toggleSidebar }) {
               to="/teacher/reports"
               className={`${linkClass} ${
                 pathname.startsWith("/teacher/reports") && activeLinkClass
-              }`}
-            >
+              }`}>
               <TbChartBar size={16} className="mr-4" />
               {language === "vi" ? "Điểm số" : "Scores"}
             </NavLink>

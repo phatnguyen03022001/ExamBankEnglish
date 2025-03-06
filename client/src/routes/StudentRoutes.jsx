@@ -17,14 +17,14 @@ import Exam from "../pages/Student/Exam.jsx";
 import Profile from "../components/Profile/Profile";
 import PublicProfile from "../components/Profile/PublicProfile.jsx";
 
-import Message from '../components/Message/Message'
+import Message from "../components/Message/Message";
 
-const practiceTestsPath =`${process.env.REACT_APP_URL}/practicetests/:examId`
+const practiceTestsPath = `${process.env.REACT_APP_URL}/practicetests/:examId`;
 
 const StudentRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Exam />} />
+      <Route path="/" element={<PracticeTests />} />
       <Route path="/exam" element={<Exam />} />
       <Route path="/practicetests" element={<PracticeTests />} />
       <Route path="/practicetests/:examId" element={<PracticeTestsDetails />} />
@@ -40,12 +40,9 @@ const StudentRoutes = () => {
       <Route path="/score" element={<ScoreManagement />} />
       <Route path="/score/:classId" element={<ScoreDetails />} />
 
-
-
       <Route path="/message" element={<Message />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/publicprofile/:userId" element={<PublicProfile />} />
-
     </Routes>
   );
 };

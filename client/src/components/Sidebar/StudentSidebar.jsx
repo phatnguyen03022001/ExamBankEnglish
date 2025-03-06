@@ -17,18 +17,16 @@ function StudentSidebar({ responsiveClass, toggleSidebar }) {
   return (
     <div>
       <div
-        className={`w-72 flex flex-col bg-stone-100 dark:bg-stone-900 text-black dark:text-white ${responsiveClass}`}
-      >
+        className={`w-72 flex flex-col bg-stone-100 dark:bg-stone-900 text-black dark:text-white ${responsiveClass}`}>
         <ul className="flex flex-col space-y-2 p-4 text-sm mt-4 mx-4 rounded-lg shadow bg-white dark:bg-stone-800">
           <li>
             <NavLink
-              to="/student/practicetests"
+              to="/student"
               className={`${linkClass} ${
                 (pathname === "/student" ||
                   pathname.startsWith("/student/practicetests")) &&
                 activeLinkClass
-              }`}
-            >
+              }`}>
               <TbDatabase size={16} className="mr-4" />
               {language === "vi" ? "Làm bài thi thử" : "Practice Tests"}
             </NavLink>
@@ -39,8 +37,7 @@ function StudentSidebar({ responsiveClass, toggleSidebar }) {
               to="/student/exam"
               className={`${linkClass} ${
                 pathname.startsWith("/student/exam") && activeLinkClass
-              }`}
-            >
+              }`}>
               <TbWriting size={16} className="mr-4" />
               {language === "vi" ? "Kỳ thi" : "Exams"}
             </NavLink>
@@ -51,8 +48,7 @@ function StudentSidebar({ responsiveClass, toggleSidebar }) {
               to="/student/score"
               className={`${linkClass} ${
                 pathname.startsWith("/student/score") && activeLinkClass
-              }`}
-            >
+              }`}>
               <TbChartBar size={16} className="mr-4" />
               {language === "vi" ? "Quản lý điểm số" : "Score Management"}
             </NavLink>

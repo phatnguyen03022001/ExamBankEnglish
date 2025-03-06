@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header.jsx";
 // import Footer from "./Footer.jsx";
-import Sidebar from '../Sidebar/StudentSidebar.jsx';
+import Sidebar from "../Sidebar/StudentSidebar.jsx";
 import Breadcrumb from "./Breadcrumb.jsx";
 
 const HeadLayout = ({ children }) => {
@@ -12,7 +12,7 @@ const HeadLayout = ({ children }) => {
       <div className="flex flex-1">
         <Sidebar responsiveClass={responsiveClass} />
         <main className="flex-1 p-4 text-black overflow-hidden">
-          <Breadcrumb/>
+          <Breadcrumb />
           {children}
         </main>
       </div>
@@ -22,4 +22,3 @@ const HeadLayout = ({ children }) => {
 };
 
 export default HeadLayout;
-
