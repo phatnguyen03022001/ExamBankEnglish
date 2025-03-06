@@ -33,8 +33,8 @@ app.use("/auth", authRoutes);
 // Khởi tạo socket.io
 const io = setupSocket(server);
 
-const port = process.env.PORT || 8000; // Sử dụng giá trị mặc định nếu không có PORT
-console.log(port);
+const port = process.env.port || 8000; // Sử dụng giá trị mặc định nếu không có PORT
+console.log(port, process.env.CLIENT_URL);
 
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
