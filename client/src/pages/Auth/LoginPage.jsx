@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../Redux/Auth/authSlice";
@@ -6,7 +6,58 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/Image/logo.png";
 import default_bg from "../../assets/Image/default_bg.png";
-import { HiOutlineInformationCircle } from "react-icons/hi"; // Import icon
+
+import { HiOutlineInformationCircle, HiX } from "react-icons/hi"; // Import icon
+
+const TestAccountDialog = ({ isOpen, onClose }) => {
+  const dialogRef = useRef(null);
+
+  // Đóng dialog khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm">
+      <div
+        ref={dialogRef}
+        className="bg-white w-96 p-6 rounded-xl shadow-2xl relative transition-transform transform scale-100 hover:scale-105">
+        <button
+          className="absolute top-3 right-3 text-stone-600 hover:text-red-500 transition-colors duration-200"
+          onClick={onClose}>
+          <HiX size={24} />
+        </button>
+        <h2 className="text-xl font-bold text-red-600 text-center border-b pb-2">
+          Test Accounts
+        </h2>
+        <div className="mt-4 text-stone-700 text-sm space-y-2">
+          <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
+            <span className="font-semibold">Student:</span>{" "}
+            <span>120240001 | Pass: admin</span>
+          </p>
+          <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
+            <span className="font-semibold">Teacher:</span>{" "}
+            <span>T20240001 | Pass: admin</span>
+          </p>
+          <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
+            <span className="font-semibold">Head:</span>{" "}
+            <span>H20240001 | Pass: admin</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const LoginPage = () => {
   const notifyError = (message) => toast.error(message);
@@ -19,6 +70,13 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    let role = "Student"; // Mặc định là Student
+    if (username.startsWith("T")) {
+      role = "Teacher";
+    } else if (username.startsWith("H")) {
+      role = "Head";
+    }
     const loginUser = { username, password, role };
     try {
       const url = `${process.env.REACT_APP_API_URL}${role}/login`;
@@ -77,17 +135,6 @@ const LoginPage = () => {
                   required
                 />
 
-                <select
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-stone-100 border border-stone-200 placeholder-stone-500 text-sm focus:outline-none focus:border-stone-400 focus:bg-white mt-5"
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
-                  <option value="Student">Student</option>
-                  <option value="Teacher">Teacher</option>
-                  <option value="Head">Head</option>
-                </select>
-
                 <button className="mt-5 tracking-wide font-semibold bg-stone-500 text-stone-100 w-full py-4 rounded-lg hover:bg-stone-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                   <span className="ml-3">Login</span>
                 </button>
@@ -97,11 +144,27 @@ const LoginPage = () => {
             <span className="mt-8">
               <Link
                 to="/forgotpassword"
-                className="mt-3 text-sm text-stone-500 hover:text-stone-700 focus:text-stone-700 focus:outline-none"
-              >
+                className="mt-3 text-sm text-stone-500 hover:text-stone-700 focus:text-stone-700 focus:outline-none">
                 Forgot Password?
               </Link>
             </span>
+
+            <div className="relative mt-36">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsDialogOpen(true)}
+                  className="text-red-300 hover:text-red-500">
+                  <HiOutlineInformationCircle size={24} />
+                </button>
+
+                {/* Hiển thị dialog khi mở */}
+                <TestAccountDialog
+                  isOpen={isDialogOpen}
+                  onClose={() => setIsDialogOpen(false)}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -110,8 +173,7 @@ const LoginPage = () => {
             className="w-full h-full bg-cover bg-center bg-no-repeat rounded-r-lg overflow-hidden relative transition-transform duration-300 ease-in-out transform hover:scale-105 "
             style={{
               backgroundImage: `url(${default_bg})`,
-            }}
-          >
+            }}>
             {/* Overlay */}
             <div className="absolute inset-0 bg-black opacity-50"></div>
             {/* Text content */}
@@ -133,32 +195,6 @@ const LoginPage = () => {
                   "You will never cultivate courage without experiencing wounds.
                   You will never gain knowledge without making mistakes. You
                   will never achieve success without facing failure."
-                  <div className="relative mt-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsDialogOpen(!isDialogOpen)}
-                      className="text-red-300 hover:text-red-500"
-                    >
-                      <HiOutlineInformationCircle size={24} />
-                    </button>
-
-                    {isDialogOpen && (
-                      <div className="relative text-center mt-2 w-80 p-4 bg-white border border-red-200 rounded-lg shadow-md z-10">
-                        <p className="text-sm text-red-700">Accounts test</p>
-                        <p className="text-sm mt-4 text-stone-700">
-                          Student: 120240001 Pass: admin <br />
-                          Teacher: T20240001 Pass: admin <br />
-                          Head: H20240001 Pass: admin <br />
-                        </p>
-                        <button
-                          onClick={() => setIsDialogOpen(false)}
-                          className="mt-2 text-xs text-red-500 hover:text-red-700"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    )}
-                  </div>
                 </p>
               </blockquote>
             </div>
