@@ -7,7 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/Image/logo.png";
 import default_bg from "../../assets/Image/default_bg.png";
 
-import { HiOutlineInformationCircle, HiX } from "react-icons/hi"; // Import icon
+import {
+  HiOutlineInformationCircle,
+  HiOutlineQuestionMarkCircle,
+  HiX,
+} from "react-icons/hi"; // Import icon
 
 const TestAccountDialog = ({ isOpen, onClose }) => {
   const dialogRef = useRef(null);
@@ -38,7 +42,7 @@ const TestAccountDialog = ({ isOpen, onClose }) => {
           <HiX size={24} />
         </button>
         <h2 className="text-xl font-bold text-red-600 text-center border-b pb-2">
-          Test Accounts
+          Test account for customers
         </h2>
         <div className="mt-4 text-stone-700 text-sm space-y-2">
           <p className="flex justify-between bg-stone-100 p-2 rounded-lg">
@@ -53,6 +57,17 @@ const TestAccountDialog = ({ isOpen, onClose }) => {
             <span className="font-semibold">Student:</span>{" "}
             <span>120240001 | Pass: admin</span>
           </p>
+
+          <hr className="border-t border-stone-200 my-4 pt-2" />
+
+          <a
+            className="flex items-center justify-center gap-2 text-lg font-semibold text-white bg-red-600 hover:bg-red-700 transition-all duration-200 rounded-lg px-4 py-2 shadow-md hover:scale-105"
+            href="https://github.com/phatnguyen03022001/ExamBankEnglish"
+            target="_blank"
+            rel="noopener noreferrer">
+            <HiOutlineQuestionMarkCircle size={20} />
+            User manual
+          </a>
         </div>
       </div>
     </div>
@@ -63,7 +78,7 @@ const LoginPage = () => {
   const notifyError = (message) => toast.error(message);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Student");
+  // const [role, setRole] = useState("Student");
   const [isDialogOpen, setIsDialogOpen] = useState(true); // State for dialog visibility
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -135,7 +150,7 @@ const LoginPage = () => {
                   required
                 />
 
-                <button className="mt-5 tracking-wide font-semibold bg-stone-500 text-stone-100 w-full py-4 rounded-lg hover:bg-stone-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                <button className="mt-5 tracking-wide font-semibold bg-red-500 text-white w-full py-4 rounded-lg hover:bg-red-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                   <span className="ml-3">Login</span>
                 </button>
               </div>
@@ -170,7 +185,7 @@ const LoginPage = () => {
 
         <div className="flex-1 bg-stone-100 text-center hidden lg:flex relative overflow-hidden rounded-r-lg">
           <div
-            className="w-full h-full bg-cover bg-center bg-no-repeat rounded-r-lg overflow-hidden relative transition-transform duration-300 ease-in-out transform hover:scale-105 "
+            className="w-full h-full bg-cover bg-center bg-no-repeat rounded-r-lg overflow-hidden relative transition-transform duration-300 ease-in-out transform hover:scale-105"
             style={{
               backgroundImage: `url(${default_bg})`,
             }}>
@@ -183,7 +198,7 @@ const LoginPage = () => {
                   LEARNING
                   <br />
                   IS THE EYE
-                </span>{" "}
+                </span>
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-200 from-red-300">
                   OF THE MIND
