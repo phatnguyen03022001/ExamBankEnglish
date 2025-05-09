@@ -1,0 +1,74 @@
+table Permission{
+    ...id: string;
+    name: string;
+}
+
+[
+    {"id": 1,
+    "name": 'user.create'},
+    {
+    "id": 2,
+    "name": 'user.update'},
+    {
+    "id": 3,
+    "name": 'user.delete'},
+    {
+        "id": 4,
+        "name": 'class.get'
+    },
+]
+
+table User {
+    ...id: string;
+    name: string;
+    email: string;
+    password: string;
+    role: Role
+}
+
+table Role {
+    ...id: string;
+    name: string;
+    userId: User,
+    rolePermissions: CustomPermission[] id...
+}
+
+table CustomPermission {
+    roleId: Role,...
+    userId: User,...
+    permission: Permission,
+    enable: boolean
+}
+
+
+
+
+
+role {
+    "id": 1,
+    "name": 'admin',
+    "rolePermissions": [
+        {
+            "roleId": 1,
+            "userId": 1,
+            "permission": 1,
+            "enable": true
+        },
+        {
+            "roleId": 1,
+            "userId": 1,
+            "permission": 2,
+            "enable": true
+        },
+            "userId": 1,
+            "permission": 3,
+            "enable": fale
+        },
+        {
+            "roleId": 1,
+            "userId": 1,
+            "permission": 4,
+            "enable": true
+        }
+    ]
+}
